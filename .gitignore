@@ -1,0 +1,15 @@
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+.DS_Store
+
+# Secrets — never commit API keys
+Config.xcconfig
+
+# SPM
+.swiftpm/
+.build/
+
+# Leftover duplicate project stub (see README) — remove entirely before submission
+MVLAssignment.xcodeproj/
