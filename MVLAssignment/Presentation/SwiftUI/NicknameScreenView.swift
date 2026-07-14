@@ -2,7 +2,6 @@ import SwiftUI
 
 /// Screen 2 — nickname assignment for a single slot (A or B), matching the
 /// wireframe: bold "A  location name" header, "aqi   0" row, nickname field,
-/// gold action button at the bottom.
 struct NicknameScreenView: View {
     @ObservedObject var viewModel: NicknameViewModel
     let onDone: () -> Void

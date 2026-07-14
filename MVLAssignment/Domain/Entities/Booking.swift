@@ -34,5 +34,5 @@ struct Booking: Equatable, Codable {
     let a: BookingPoint
     let b: BookingPoint
     let price: Double
+    let createdAt: Date  
 }
-

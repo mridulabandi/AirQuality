@@ -24,6 +24,7 @@ struct BookingResponseDTO: Decodable {
     let a: BookingPointDTO
     let b: BookingPointDTO
     let price: Double
+    let createdAt: Date
 }
 
 extension BookingPoint {
@@ -38,7 +39,8 @@ extension BookingResponseDTO {
             id: id,
             a: BookingPoint(latitude: a.latitude, longitude: a.longitude, aqi: a.aqi, name: a.name),
             b: BookingPoint(latitude: b.latitude, longitude: b.longitude, aqi: b.aqi, name: b.name),
-            price: price
+            price: price,
+            createdAt: createdAt
         )
     }
 }

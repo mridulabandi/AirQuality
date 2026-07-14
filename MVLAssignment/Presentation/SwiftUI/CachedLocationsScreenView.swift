@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Screen 5 (bonus) — cached location picker. Matches the wireframe: a plain
-/// list of location names, one per row.
 struct CachedLocationsScreenView: View {
     @ObservedObject var viewModel: CachedLocationsViewModel
     let slot: SlotIdentifier

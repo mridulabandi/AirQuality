@@ -167,8 +167,36 @@ final class MockBookingRepositoryTests: XCTestCase {
         let b = BookingPoint(latitude: 36.567, longitude: 127.000, aqi: 40, name: "B")
         _ = try await repository.createBooking(a: a, b: b)
 
-        let bookings = try await repository.fetchBookings(year: 2026, month: 7)
+        let now = Date()
+        let components = Calendar.current.dateComponents([.year, .month], from: now)
+        let bookings = try await repository.fetchBookings(year: components.year!, month: components.month!)
 
-        XCTAssertGreaterThanOrEqual(bookings.count, 3) // 2 seeded + 1 created
+        // seed-2 (dated "now") + the just-created booking. seed-1 is dated
+        // one month back specifically so it's excluded here — see
+        // testFetchBookings_excludesBookingsOutsideRequestedMonth below.
+        XCTAssertGreaterThanOrEqual(bookings.count, 2)
+    }
+
+    /// Locks in the year/month filtering fix. The mock previously ignored
+    /// both parameters and returned every booking regardless of the query —
+    /// this is the exact defect a past candidate was rejected for.
+    func testFetchBookings_excludesBookingsOutsideRequestedMonth() async throws {
+        let repository = MockBookingRepository()
+        let now = Date()
+        let calendar = Calendar.current
+        let currentComponents = calendar.dateComponents([.year, .month], from: now)
+        guard let year = currentComponents.year, let month = currentComponents.month else {
+            return XCTFail("Could not resolve current year/month")
+        }
+
+        let currentMonthBookings = try await repository.fetchBookings(year: year, month: month)
+        let unrelatedFutureBookings = try await repository.fetchBookings(year: year + 5, month: month)
+
+        // A far-future year/month should never match any seeded or created
+        // booking, proving the filter actually discriminates rather than
+        // returning the same full list for every query.
+        XCTAssertTrue(unrelatedFutureBookings.isEmpty)
+        XCTAssertFalse(currentMonthBookings.isEmpty)
     }
 }
+

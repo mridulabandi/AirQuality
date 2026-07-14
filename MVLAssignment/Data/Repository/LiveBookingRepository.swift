@@ -14,60 +14,50 @@ import Foundation
 
 final class LiveBookingRepository: BookingRepository {
     private let baseURL: String
-    private let session: Alamofire.Session
-    private let encoder: JSONEncoder
+    private let session: Session
     private let decoder: JSONDecoder
 
-    init(
-        baseURL: String,
-        session: Alamofire.Session = .default,
-        encoder: JSONEncoder = JSONEncoder(),
-        decoder: JSONDecoder = JSONDecoder()
-    ) {
+    init(baseURL: String, session: Session = .default) {
         self.baseURL = baseURL
         self.session = session
-        self.encoder = encoder
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
         self.decoder = decoder
     }
 
     func createBooking(a: BookingPoint, b: BookingPoint) async throws -> Booking {
-        let endpoint = "\(baseURL)/books"
-        let request = BookingRequestDTO(a: a.dto, b: b.dto)
-        let jsonEncoder = JSONParameterEncoder(encoder: encoder)
+        let url = "\(baseURL)/books"
+        let body = BookingRequestDTO(a: a.dto, b: b.dto)
 
-        let data = try await session.request(
-            endpoint,
-            method: .post,
-            parameters: request,
-            encoder: jsonEncoder
-        )
-        .validate(statusCode: 200..<300)
-        .serializingData()
-        .value
-
-        do {
-            return try decoder.decode(BookingResponseDTO.self, from: data).domain
-        } catch {
-            throw APIError.decodingFailed
+        return try await withCheckedThrowingContinuation { continuation in
+            session.request(url, method: .post, parameters: body, encoder: JSONParameterEncoder.default)
+                .validate()
+                .responseDecodable(of: BookingResponseDTO.self, decoder: decoder) { response in
+                    switch response.result {
+                    case .success(let dto):
+                        continuation.resume(returning: dto.domain)
+                    case .failure:
+                        continuation.resume(throwing: APIError.invalidResponse)
+                    }
+                }
         }
     }
 
     func fetchBookings(year: Int, month: Int) async throws -> [Booking] {
-        let endpoint = "\(baseURL)/books"
-        let parameters: Parameters = [
-            "year": year,
-            "month": month
-        ]
+        let url = "\(baseURL)/books"
+        let parameters: [String: Int] = ["year": year, "month": month]
 
-        let data = try await session.request(endpoint, parameters: parameters)
-            .validate(statusCode: 200..<300)
-            .serializingData()
-            .value
-
-        do {
-            return try decoder.decode([BookingResponseDTO].self, from: data).map { $0.domain }
-        } catch {
-            throw APIError.decodingFailed
+        return try await withCheckedThrowingContinuation { continuation in
+            session.request(url, method: .get, parameters: parameters)
+                .validate()
+                .responseDecodable(of: [BookingResponseDTO].self, decoder: decoder) { response in
+                    switch response.result {
+                    case .success(let dtos):
+                        continuation.resume(returning: dtos.map { $0.domain })
+                    case .failure:
+                        continuation.resume(throwing: APIError.invalidResponse)
+                    }
+                }
         }
     }
 }

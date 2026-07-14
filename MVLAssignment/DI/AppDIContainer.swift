@@ -10,7 +10,6 @@ import Foundation
 final class AppDIContainer {
     static let shared = AppDIContainer()
 
-    // MARK: Repositories (singletons — cache must be shared across screens)
     lazy var locationCacheRepository: LocationCacheRepository = InMemoryLocationCacheRepository()
 
     lazy var airQualityRepository: AirQualityRepository =

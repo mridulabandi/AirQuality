@@ -8,8 +8,7 @@
 import Foundation
 
 enum APIConstants {
-    /// Keys are never hardcoded here. They're injected at build time via
-    /// Config.xcconfig -> Info.plist custom keys, and read at runtime below.
+    
     /// See README.md "API Key Setup" for the one-time Xcode configuration.
     static let aqicnToken = infoPlistValue(for: "AQICN_TOKEN")
     static let bigDataCloudKey = infoPlistValue(for: "BIGDATACLOUD_KEY")

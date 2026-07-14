@@ -9,8 +9,6 @@
 import Foundation
 import Combine
 
-/// MVVM ViewModel for Screen 1. Owns no UIKit/MapSDK types — the ViewController
-/// feeds it coordinates from map-drag callbacks and reads back published state.
 final class MapViewModel: ObservableObject {
     private let resolveLocationUseCase: ResolveLocationUseCase
     private let fetchAirQualityUseCase: FetchAirQualityUseCase

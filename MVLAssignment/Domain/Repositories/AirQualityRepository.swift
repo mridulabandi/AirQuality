@@ -9,7 +9,6 @@ import Foundation
 
 protocol AirQualityRepository {
     /// Fetches AQI for a coordinate. Always hits the network — AQI is time-sensitive
-    /// even for a coordinate that's been geocoded before.
     func fetchAirQuality(at coordinate: Coordinate) async throws -> AirQuality
 }
 

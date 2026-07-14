@@ -17,9 +17,6 @@ enum SlotIdentifier {
 /// Screen 1" and "history row tap pre-fills Screen 1" simple: every screen
 /// reads/writes the same store instead of passing state through segues.
 ///
-/// Kept as a plain ObservableObject (Combine) rather than a full TCA store —
-/// the assignment allows either; this is enough for a 5-screen flow's needs
-/// without pulling in extra bonus-scope infrastructure.
 final class BookingFlowStore: ObservableObject {
 
     @Published private(set) var slotA: CachedLocation?

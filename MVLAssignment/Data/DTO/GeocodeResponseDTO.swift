@@ -24,8 +24,6 @@ struct GeocodeResponseDTO: Decodable {
     let localityInfo: LocalityInfoDTO
 }
 
-/// using the two name values with the highest order from
-/// localityInfo → administrative and concatenate them.
 enum AddressNameMapper {
     static func displayName(from dto: GeocodeResponseDTO) -> String {
         let sortedByOrderDesc = dto.localityInfo.administrative

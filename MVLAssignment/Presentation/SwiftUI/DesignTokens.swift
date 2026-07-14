@@ -1,9 +1,6 @@
 import SwiftUI
 
-/// Shared visual tokens pulled from the Figma wireframe screenshot, kept in
-/// one place so all 5 screens stay visually consistent. Adjust these if the
-/// real Figma file specifies exact hex values / fonts beyond what the
-/// wireframe shows.
+
 enum DesignTokens {
     static let actionGold = Color(red: 0.93, green: 0.75, blue: 0.25)
     static let cardBackground = Color.white
@@ -14,8 +11,6 @@ enum DesignTokens {
     static let screenPadding: CGFloat = 16
 }
 
-/// The "V Button" component from the wireframe: a fixed-size gold square with
-/// bold centered text, used identically across Screens 1, 2, and 3.
 struct ActionSquareButton: View {
     let title: String
     let action: () -> Void
@@ -32,7 +27,6 @@ struct ActionSquareButton: View {
     }
 }
 
-/// A left-label / right-value row, e.g. "aqi   80" or "nickname   home".
 struct InfoRow: View {
     let label: String
     let value: String
@@ -48,5 +42,35 @@ struct InfoRow: View {
         }
         .font(.system(size: 15))
         .padding(.vertical, 6)
+    }
+}
+
+
+extension View {
+    func errorAlert(message: String?) -> some View {
+        modifier(ErrorAlertModifier(message: message))
+    }
+}
+
+private struct ErrorAlertModifier: ViewModifier {
+    let message: String?
+    @State private var localMessage: String?
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: message) { _, newValue in
+                if let newValue { localMessage = newValue }
+            }
+            .alert(
+                "Something went wrong",
+                isPresented: Binding(
+                    get: { localMessage != nil },
+                    set: { if !$0 { localMessage = nil } }
+                )
+            ) {
+                Button("OK", role: .cancel) { localMessage = nil }
+            } message: {
+                Text(localMessage ?? "")
+            }
     }
 }

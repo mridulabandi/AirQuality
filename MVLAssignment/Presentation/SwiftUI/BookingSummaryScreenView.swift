@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Screen 3 — booking summary. Matches the wireframe: A's details block,
-/// B's details block, a price row, and the gold action button at the bottom.
 struct BookingSummaryScreenView: View {
     @ObservedObject var viewModel: BookingResultViewModel
     let onViewHistory: () -> Void
@@ -32,6 +30,7 @@ struct BookingSummaryScreenView: View {
         }
         .padding(DesignTokens.screenPadding)
         .task { await viewModel.createBooking() }
+        .errorAlert(message: viewModel.errorMessage)
     }
 
     private func locationBlock(letter: String, name: String, aqi: Int) -> some View {

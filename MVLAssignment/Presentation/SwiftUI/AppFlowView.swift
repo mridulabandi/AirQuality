@@ -1,9 +1,5 @@
 import SwiftUI
 
-/// Replaces AppCoordinator + MapFlowContainerView now that screens are native
-/// SwiftUI. NavigationStack + an enum path plays the same role the UIKit
-/// UINavigationController did — one BookingFlowStore instance lives for the
-/// life of one flow-run and is reset when we pop back to Screen 1.
 struct AppFlowView: View {
     private let container = AppDIContainer.shared
     @StateObject private var flowStore = BookingFlowStore()

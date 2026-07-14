@@ -26,7 +26,6 @@ struct GeoLocation: Equatable, Hashable {
     }
 }
 
-/// A cached lookup result — location + the AQI that was measured at capture time.
 struct CachedLocation: Equatable, Hashable {
     let location: GeoLocation
     let airQuality: AirQuality

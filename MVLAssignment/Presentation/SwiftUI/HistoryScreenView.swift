@@ -44,5 +44,6 @@ struct HistoryScreenView: View {
             .listStyle(.plain)
         }
         .task { await viewModel.loadCurrentMonth() }
+        .errorAlert(message: viewModel.errorMessage)
     }
 }

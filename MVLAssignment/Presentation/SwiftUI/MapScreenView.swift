@@ -53,6 +53,7 @@ struct MapScreenView: View {
             locationManager.requestWhenInUseAuthorization()
             viewModel.refreshStaleSlotsIfNeeded()
         }
+        .errorAlert(message: viewModel.errorMessage)
     }
 
     private var aqiBadge: some View {
